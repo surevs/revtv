@@ -56,7 +56,15 @@ def create_addon_zip(addon_dir):
                     continue
                 file_path = os.path.join(root, file)
                 arc_name = os.path.join(addon_dir, os.path.relpath(file_path, addon_path))
-                zf.write(file_path, arc_name)
+                
+                # set permission 644 for files
+                info = zipfile.ZipInfo(arc_name)
+                info.date_time = zipfile.get_info(zip_path).date_time if os.path.exists(zip_path) else (2025, 1, 1, 0, 0, 0)
+                info.external_attr = 0o644 << 16
+                info.compress_type = zipfile.ZIP_DEFLATED
+                
+                with open(file_path, 'rb') as f:
+                    zf.writestr(info, f.read())
     
     print(f"Created: zips/{addon_dir}/{zip_name}")
     return zip_name
