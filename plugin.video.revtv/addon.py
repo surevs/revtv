@@ -28,14 +28,6 @@ ADDON_ICON = ADDON.getAddonInfo('icon')
 # Plugin handle
 HANDLE = int(sys.argv[1])
 
-# Import services
-try:
-    from lib.services import jiotv, hotstar, sonyliv, zee5, etvwin, sunnxt, aha
-    from lib.auth import token_manager
-    from lib.utils import api_client
-except ImportError as e:
-    xbmc.log(f"[RevTV] Import error: {e}", xbmc.LOGERROR)
-
 
 def get_url(**kwargs):
     """Create a plugin URL with the given parameters."""
@@ -56,44 +48,51 @@ def show_main_menu():
     """Display the main menu with available services."""
     log("Showing main menu")
     
-    services = [
-        {'name': 'JioTV', 'action': 'jiotv', 'icon': 'jiotv.png', 'enabled': True},
-        {'name': 'JioHotstar', 'action': 'hotstar', 'icon': 'hotstar.png', 'enabled': False},
-        {'name': 'SonyLIV', 'action': 'sonyliv', 'icon': 'sonyliv.png', 'enabled': False},
-        {'name': 'Zee5', 'action': 'zee5', 'icon': 'zee5.png', 'enabled': False},
-        {'name': 'ETV Win', 'action': 'etvwin', 'icon': 'etvwin.png', 'enabled': False},
-        {'name': 'Sun NXT', 'action': 'sunnxt', 'icon': 'sunnxt.png', 'enabled': False},
-        {'name': 'Aha', 'action': 'aha', 'icon': 'aha.png', 'enabled': False},
-    ]
-    
     xbmcplugin.setPluginCategory(HANDLE, ADDON_NAME)
-    xbmcplugin.setContent(HANDLE, 'videos')
+    xbmcplugin.setContent(HANDLE, 'files')
+    
+    services = [
+        {'name': '📺 JioTV', 'action': 'jiotv', 'enabled': True, 'desc': '800+ Live TV Channels'},
+        {'name': '🎬 JioHotstar', 'action': 'hotstar', 'enabled': False, 'desc': 'Coming Soon'},
+        {'name': '📱 SonyLIV', 'action': 'sonyliv', 'enabled': False, 'desc': 'Coming Soon'},
+        {'name': '🌟 Zee5', 'action': 'zee5', 'enabled': False, 'desc': 'Coming Soon'},
+        {'name': '🎭 ETV Win', 'action': 'etvwin', 'enabled': False, 'desc': 'Coming Soon'},
+        {'name': '☀️ Sun NXT', 'action': 'sunnxt', 'enabled': False, 'desc': 'Coming Soon'},
+        {'name': '🎪 Aha', 'action': 'aha', 'enabled': False, 'desc': 'Coming Soon'},
+    ]
     
     for service in services:
         if service['enabled']:
-            label = service['name']
+            label = f"{service['name']}"
         else:
-            label = f"{service['name']} [Coming Soon]"
+            label = f"{service['name']} [COLOR gray]({service['desc']})[/COLOR]"
         
         list_item = xbmcgui.ListItem(label=label)
         list_item.setArt({'icon': ADDON_ICON, 'fanart': ADDON_ICON})
-        list_item.setInfo('video', {'title': label, 'mediatype': 'video'})
         
-        url = get_url(action=service['action']) if service['enabled'] else get_url(action='coming_soon')
-        
-        xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
+        if service['enabled']:
+            url = get_url(action=service['action'])
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=True)
+        else:
+            url = get_url(action='coming_soon', service=service['name'])
+            xbmcplugin.addDirectoryItem(HANDLE, url, list_item, isFolder=False)
     
-    # Settings menu item
-    settings_item = xbmcgui.ListItem(label='[B]Settings[/B]')
+    # Separator
+    sep = xbmcgui.ListItem(label='─' * 40)
+    sep.setProperty('IsPlayable', 'false')
+    xbmcplugin.addDirectoryItem(HANDLE, '', sep, isFolder=False)
+    
+    # Settings
+    settings_item = xbmcgui.ListItem(label='⚙️ Settings')
     settings_item.setArt({'icon': ADDON_ICON})
-    xbmcplugin.addDirectoryItem(HANDLE, get_url(action='settings'), settings_item, isFolder=True)
+    xbmcplugin.addDirectoryItem(HANDLE, get_url(action='settings'), settings_item, isFolder=False)
     
     xbmcplugin.endOfDirectory(HANDLE)
 
 
-def show_coming_soon():
+def show_coming_soon(service_name='This service'):
     """Show coming soon message."""
-    show_notification("This service is coming soon!", time=3000)
+    show_notification(f"{service_name} is coming soon!", time=3000)
 
 
 def open_settings():
@@ -105,24 +104,47 @@ def router(params):
     """Route to the appropriate action based on parameters."""
     action = params.get('action')
     
+    log(f"Router action: {action}, params: {params}")
+    
     if action is None:
         show_main_menu()
+    
+    # JioTV routes
     elif action == 'jiotv':
+        from lib.services import jiotv
         jiotv.show_menu(HANDLE, get_url)
     elif action == 'jiotv_categories':
+        from lib.services import jiotv
         jiotv.show_categories(HANDLE, get_url)
+    elif action == 'jiotv_languages':
+        from lib.services import jiotv
+        jiotv.show_languages(HANDLE, get_url)
     elif action == 'jiotv_channels':
+        from lib.services import jiotv
         category = params.get('category')
-        jiotv.show_channels(HANDLE, get_url, category)
+        language = params.get('language')
+        jiotv.show_channels(HANDLE, get_url, category=category, language=language)
     elif action == 'jiotv_play':
+        from lib.services import jiotv
         channel_id = params.get('channel_id')
         jiotv.play_channel(HANDLE, channel_id)
     elif action == 'jiotv_login':
+        from lib.services import jiotv
         jiotv.login()
+    elif action == 'jiotv_logout':
+        from lib.services import jiotv
+        jiotv.logout()
+    
+    # Other services (coming soon)
+    elif action in ('hotstar', 'sonyliv', 'zee5', 'etvwin', 'sunnxt', 'aha'):
+        show_coming_soon(params.get('service', action))
+    
     elif action == 'coming_soon':
-        show_coming_soon()
+        show_coming_soon(params.get('service', 'This service'))
+    
     elif action == 'settings':
         open_settings()
+    
     else:
         log(f"Unknown action: {action}", xbmc.LOGWARNING)
         show_main_menu()
