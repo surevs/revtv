@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<settings version="2">
+    <section id="general">
+        <category id="jiotv" label="JioTV Settings">
+            <group id="jiotv_auth" label="Authentication">
+                <setting id="jiotv_mobile" type="string" label="Mobile Number" help="Your Jio mobile number (10 digits)">
+                    <default></default>
+                </setting>
+                <setting id="jiotv_token" type="string" label="Auth Token" visible="false">
+                    <default></default>
+                </setting>
+                <setting id="jiotv_refresh_token" type="string" label="Refresh Token" visible="false">
+                    <default></default>
+                </setting>
+            </group>
+            <group id="jiotv_quality" label="Quality Settings">
+                <setting id="jiotv_quality" type="select" label="Stream Quality">
+                    <default>auto</default>
+                    <constraints>
+                        <allowempty>false</allowempty>
+                        <options>
+                            <option label="Auto (Adaptive)">auto</option>
+                            <option label="High (720p+)">high</option>
+                            <option label="Medium (480p)">medium</option>
+                            <option label="Low (360p)">low</option>
+                        </options>
+                    </constraints>
+                </setting>
+            </group>
+        </category>
+        
+        <category id="hotstar" label="JioHotstar Settings">
+            <group id="hotstar_auth" label="Authentication">
+                <setting id="hotstar_mobile" type="string" label="Mobile Number">
+                    <default></default>
+                </setting>
+                <setting id="hotstar_token" type="string" label="Auth Token" visible="false">
+                    <default></default>
+                </setting>
+            </group>
+        </category>
+        
+        <category id="sonyliv" label="SonyLIV Settings">
+            <group id="sonyliv_auth" label="Authentication">
+                <setting id="sonyliv_email" type="string" label="Email">
+                    <default></default>
+                </setting>
+                <setting id="sonyliv_token" type="string" label="Auth Token" visible="false">
+                    <default></default>
+                </setting>
+            </group>
+        </category>
+        
+        <category id="zee5" label="Zee5 Settings">
+            <group id="zee5_auth" label="Authentication">
+                <setting id="zee5_email" type="string" label="Email">
+                    <default></default>
+                </setting>
+                <setting id="zee5_token" type="string" label="Auth Token" visible="false">
+                    <default></default>
+                </setting>
+            </group>
+        </category>
+        
+        <category id="advanced" label="Advanced">
+            <group id="streaming" label="Streaming">
+                <setting id="adaptive_enabled" type="boolean" label="Enable Adaptive Streaming">
+                    <default>true</default>
+                </setting>
+                <setting id="buffer_size" type="slider" label="Buffer Size (MB)">
+                    <default>20</default>
+                    <constraints>
+                        <minimum>5</minimum>
+                        <maximum>100</maximum>
+                        <step>5</step>
+                    </constraints>
+                </setting>
+            </group>
+            <group id="debug" label="Debug">
+                <setting id="debug_enabled" type="boolean" label="Enable Debug Logging">
+                    <default>false</default>
+                </setting>
+            </group>
+        </category>
+    </section>
+</settings>

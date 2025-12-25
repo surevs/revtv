@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<addons><addon id="plugin.video.revtv" name="RevTV" version="1.0.0" provider-name="surevs">
+    <requires>
+        <import addon="xbmc.python" version="3.0.1" />
+        <import addon="script.module.requests" version="2.25.0" />
+        <import addon="inputstream.adaptive" version="19.0.0" />
+    </requires>
+    <extension point="xbmc.python.pluginsource" library="addon.py">
+        <provides>video</provides>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Stream Indian regional TV channels</summary>
+        <description lang="en_GB">RevTV - A unified addon to stream Indian regional TV channels including JioTV, JioHotstar, SonyLIV, Zee5, ETV Win, Sun NXT, and Aha. Requires valid subscriptions for each service. Optimized for low bandwidth with adaptive streaming.</description>
+        <disclaimer lang="en_GB">This addon requires valid subscriptions to access content. Users must provide their own credentials. Not affiliated with any streaming service. For personal use only.</disclaimer>
+        <language>en te hi ta</language>
+        <platform>all</platform>
+        <license>MIT</license>
+        <forum />
+        <website>https://github.com/surevs/repository.revtv</website>
+        <source>https://github.com/surevs/repository.revtv</source>
+        <assets>
+            <icon>resources/icon.png</icon>
+            <fanart>resources/fanart.jpg</fanart>
+        </assets>
+    </extension>
+</addon><addon id="repository.revtv" name="RevTV Repository" version="1.0.0" provider-name="surevs">
+    <extension point="xbmc.addon.repository" name="RevTV Repository">
+        <info compressed="false">https://surevs.github.io/repository.revtv/addons.xml</info>
+        <checksum>https://surevs.github.io/repository.revtv/addons.xml.md5</checksum>
+        <datadir zip="true">https://surevs.github.io/repository.revtv/</datadir>
+    </extension>
+    <extension point="xbmc.addon.metadata">
+        <summary>RevTV Repository - Indian Regional TV Streaming</summary>
+        <description>Official repository for RevTV addon. Stream JioTV, JioHotstar, SonyLIV, Zee5, ETV Win, Sun NXT, Aha with your valid subscriptions.</description>
+        <disclaimer>Requires valid subscriptions. Not affiliated with any streaming service.</disclaimer>
+        <platform>all</platform>
+        <license>MIT</license>
+        <assets>
+            <icon>icon.png</icon>
+        </assets>
+    </extension>
+</addon></addons>
