@@ -59,7 +59,7 @@ def create_addon_zip(addon_dir):
                 
                 # set permission 644 for files
                 info = zipfile.ZipInfo(arc_name)
-                info.date_time = zipfile.get_info(zip_path).date_time if os.path.exists(zip_path) else (2025, 1, 1, 0, 0, 0)
+                info.date_time = (2025, 1, 1, 0, 0, 0)
                 info.external_attr = 0o644 << 16
                 info.compress_type = zipfile.ZIP_DEFLATED
                 
