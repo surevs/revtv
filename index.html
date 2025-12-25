@@ -1,84 +1,367 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-    <title>RevTV Repository</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RevTV - Indian Regional TV for Kodi</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --primary: #6a0dad;
+            --primary-dark: #4a0080;
+            --accent: #ff6b35;
+            --bg-dark: #0f0f1a;
+            --bg-card: #1a1a2e;
+            --text: #ffffff;
+            --text-muted: #a0a0b0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: Arial, sans-serif;
-            max-width: 800px;
-            margin: 50px auto;
-            padding: 20px;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, var(--bg-dark) 0%, #1a0a2e 100%);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        header {
+            text-align: center;
+            padding: 60px 0;
+        }
+
+        .logo {
+            width: 120px;
+            height: 120px;
+            border-radius: 24px;
+            margin-bottom: 24px;
+            box-shadow: 0 20px 60px rgba(106, 13, 173, 0.4);
         }
 
         h1 {
-            color: #6a0dad;
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #fff 0%, #c0a0ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 12px;
         }
 
-        .file-list {
-            background: #f5f5f5;
-            padding: 20px;
-            border-radius: 10px;
+        .tagline {
+            font-size: 1.25rem;
+            color: var(--text-muted);
+            margin-bottom: 32px;
         }
 
-        .file-list a {
-            display: block;
-            padding: 10px;
-            margin: 5px 0;
-            background: white;
-            border-radius: 5px;
-            text-decoration: none;
-            color: #333;
+        .badges {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 40px;
         }
 
-        .file-list a:hover {
-            background: #e0e0e0;
+        .badge {
+            background: var(--bg-card);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.875rem;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .info {
-            background: #e8f5e9;
-            padding: 15px;
-            border-radius: 10px;
-            margin: 20px 0;
+        .badge.live {
+            border-color: #00ff88;
+            color: #00ff88;
+        }
+
+        .badge.version {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+
+        .card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            margin-bottom: 24px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+
+        .card h2 {
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .url-box {
+            background: #0d0d15;
+            border-radius: 12px;
+            padding: 16px 20px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.1rem;
+            color: #00ff88;
+            border: 1px solid rgba(0, 255, 136, 0.2);
+            word-break: break-all;
+            margin-bottom: 12px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .copy-hint {
+            font-size: 0.875rem;
+            color: var(--text-muted);
+            text-align: center;
+        }
+
+        .services-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(130px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .service {
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.3s ease;
+        }
+
+        .service:hover {
+            transform: translateY(-4px);
+            border-color: var(--primary);
+        }
+
+        .service.active {
+            border-color: #00ff88;
+        }
+
+        .service.coming {
+            opacity: 0.6;
+        }
+
+        .service-icon {
+            font-size: 2rem;
+            margin-bottom: 8px;
+        }
+
+        .service-name {
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        .service-status {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        .service.active .service-status {
+            color: #00ff88;
+        }
+
+        ol {
+            padding-left: 24px;
+        }
+
+        ol li {
+            margin-bottom: 12px;
+            color: var(--text-muted);
+        }
+
+        ol li strong {
+            color: var(--text);
         }
 
         code {
-            background: #333;
-            color: #0f0;
+            background: rgba(106, 13, 173, 0.3);
             padding: 2px 8px;
             border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .feature {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 8px;
+        }
+
+        .feature-icon {
+            font-size: 1.5rem;
+        }
+
+        .btn {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-right: 12px;
+            margin-bottom: 12px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(106, 13, 173, 0.4);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--primary);
+        }
+
+        .btn-outline:hover {
+            background: rgba(106, 13, 173, 0.1);
+        }
+
+        footer {
+            text-align: center;
+            padding: 40px 0;
+            color: var(--text-muted);
+            font-size: 0.875rem;
+        }
+
+        footer a {
+            color: var(--primary);
+            text-decoration: none;
+        }
+
+        .disclaimer {
+            background: rgba(255, 107, 53, 0.1);
+            border: 1px solid rgba(255, 107, 53, 0.3);
+            border-radius: 12px;
+            padding: 16px;
+            margin-top: 24px;
+            font-size: 0.875rem;
+            color: var(--text-muted);
         }
     </style>
 </head>
 
 <body>
-    <h1>📺 RevTV Repository</h1>
-    <p>Indian Regional TV Streaming for Kodi</p>
+    <div class="container">
+        <header>
+            <img src="repository.revtv/icon.png" alt="RevTV" class="logo"
+                onerror="this.src='https://via.placeholder.com/120x120?text=RevTV'">
+            <h1>📺 RevTV</h1>
+            <p class="tagline">Indian Regional TV Streaming for Kodi</p>
+            <div class="badges">
+                <span class="badge live">● Live</span>
+                <span class="badge version">v1.1.0</span>
+                <span class="badge">MIT License</span>
+            </div>
+            <!-- Relative link to the zip in the zips folder -->
+            <a href="zips/repository.revtv/repository.revtv-1.0.0.zip" class="btn" download>Download Repository ZIP</a>
+            <a href="https://github.com/surevs/revtv" class="btn btn-outline" target="_blank">View on GitHub</a>
+        </header>
 
-    <div class="info">
-        <strong>Kodi Repository URL:</strong><br>
-        <code>https://surevs.github.io/revtv/</code>
+        <div class="card">
+            <h2>🔗 Kodi Source URL</h2>
+            <div class="url-box">https://surevs.github.io/revtv/</div>
+            <p class="copy-hint">Copy this URL and add it as a source in Kodi File Manager</p>
+        </div>
+
+        <div class="card">
+            <h2>📺 Supported Services</h2>
+            <div class="services-grid">
+                <div class="service active">
+                    <div class="service-icon">📡</div>
+                    <div class="service-name">JioTV</div>
+                    <div class="service-status">✓ 800+ Channels</div>
+                </div>
+                <div class="service active">
+                    <div class="service-icon">�</div>
+                    <div class="service-name">Telugu</div>
+                    <div class="service-status">✓ Live & Movies</div>
+                </div>
+                <div class="service coming">
+                    <div class="service-icon">🎬</div>
+                    <div class="service-name">JioHotstar</div>
+                    <div class="service-status">Coming Soon</div>
+                </div>
+                <div class="service coming">
+                    <div class="service-icon">📱</div>
+                    <div class="service-name">SonyLIV</div>
+                    <div class="service-status">Coming Soon</div>
+                </div>
+                <div class="service coming">
+                    <div class="service-icon">�</div>
+                    <div class="service-name">Zee5</div>
+                    <div class="service-status">Coming Soon</div>
+                </div>
+                <div class="service coming">
+                    <div class="service-icon">☀️</div>
+                    <div class="service-name">Sun NXT</div>
+                    <div class="service-status">Coming Soon</div>
+                </div>
+                <div class="service coming">
+                    <div class="service-icon">🎪</div>
+                    <div class="service-name">Aha</div>
+                    <div class="service-status">Coming Soon</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>� Installation Instructions</h2>
+            <ol>
+                <li><strong>Enable Unknown Sources:</strong> Settings → System → Add-ons → Enable "Unknown sources"</li>
+                <li><strong>Add Source:</strong> Settings → File Manager → Add source → Enter URL:
+                    <code>https://surevs.github.io/revtv/</code></li>
+                <li><strong>Install Repository:</strong> Add-ons → 📦 (Box Icon) → Install from zip file → Select
+                    <strong>RevTV</strong> (or whatever you named the source) → <code>zips</code> →
+                    <code>repository.revtv</code> → <strong>repository.revtv-1.0.0.zip</strong></li>
+                <li><strong>Install Add-on:</strong> Add-ons → Install from repository → <strong>RevTV
+                        Repository</strong> → Video add-ons → <strong>RevTV</strong></li>
+                <li><strong>Login:</strong> Open RevTV → Login with OTP (Jio Mobile Number)</li>
+            </ol>
+
+            <div class="disclaimer">
+                ⚠️ <strong>Disclaimer:</strong> This addon requires valid subscriptions. You must have your own active
+                account. RevTV is not affiliated with any streaming service.
+            </div>
+        </div>
+
+        <footer>
+            <p>Made with ❤️ by <a href="https://github.com/surevs">surevs</a></p>
+            <p style="margin-top: 8px;">
+                <a href="https://github.com/surevs/revtv/blob/main/LICENSE">MIT License</a> •
+                <a href="https://github.com/surevs/revtv/blob/main/DISCLAIMER.md">Disclaimer</a> •
+                <a href="https://github.com/surevs/revtv/blob/main/DMCA.md">DMCA</a>
+            </p>
+        </footer>
     </div>
-
-    <h2>📦 Download Files</h2>
-    <div class="file-list">
-        <a href="https://github.com/surevs/revtv/raw/main/repository.revtv-1.0.0.zip" download>📁
-            repository.revtv-1.0.0.zip (Install this first)</a>
-        <a href="https://github.com/surevs/revtv/raw/main/plugin.video.revtv-1.1.0.zip" download>📁
-            plugin.video.revtv-1.1.0.zip</a>
-    </div>
-
-    <h2>� Installation</h2>
-    <ol>
-        <li>Download <strong>repository.revtv-1.0.0.zip</strong> above</li>
-        <li>Open Kodi → Settings → System → Add-ons → Enable <strong>Unknown sources</strong></li>
-        <li>Add-ons → 📦 → Install from zip file</li>
-        <li>Browse to Downloads → Select the repository zip</li>
-        <li>Wait for "Repository installed"</li>
-        <li>Add-ons → Install from repository → RevTV Repository → Video add-ons → RevTV</li>
-    </ol>
-
-    <p><a href="https://github.com/surevs/revtv">View on GitHub</a></p>
 </body>
 
 </html>
