@@ -19,8 +19,8 @@
         <platform>all</platform>
         <license>MIT</license>
         <forum></forum>
-        <website>https://github.com/surevs/repository.revtv</website>
-        <source>https://github.com/surevs/repository.revtv</source>
+        <website>https://github.com/surevs/revtv</website>
+        <source>https://github.com/surevs/revtv</source>
         <assets>
             <icon>resources/icon.png</icon>
             <fanart>resources/fanart.jpg</fanart>

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <addon id="repository.revtv" name="RevTV Repository" version="1.0.0" provider-name="surevs">
     <extension point="xbmc.addon.repository" name="RevTV Repository">
-        <info compressed="false">https://surevs.github.io/repository.revtv/addons.xml</info>
-        <checksum>https://surevs.github.io/repository.revtv/addons.xml.md5</checksum>
-        <datadir zip="true">https://surevs.github.io/repository.revtv/</datadir>
+        <info compressed="false">https://surevs.github.io/revtv/addons.xml</info>
+        <checksum>https://surevs.github.io/revtv/addons.xml.md5</checksum>
+        <datadir zip="true">https://surevs.github.io/revtv/</datadir>
     </extension>
     <extension point="xbmc.addon.metadata">
         <summary>RevTV Repository - Indian Regional TV Streaming</summary>

@@ -39,7 +39,7 @@ A unified Kodi addon to stream Indian regional TV channels with **legal authenti
 1. Open Kodi → Settings → System → Add-ons
 2. Enable **Unknown sources**
 3. Go back to Settings → File manager → Add source
-4. Enter: `https://surevs.github.io/repository.revtv/`
+4. Enter: `https://surevs.github.io/revtv/`
 5. Name it: `RevTV Repo`
 
 ### Install Repository
