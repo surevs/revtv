@@ -393,7 +393,7 @@ def login():
     dialog = xbmcgui.Dialog()
     
     # Get mobile number
-    mobile = dialog.input('Enter Jio Mobile Number (10 digits)', type=xbmcgui.INPUT_NUMERIC)
+    mobile = dialog.input('RevTV Login: Enter 10-digit Jio Number', type=xbmcgui.INPUT_NUMERIC)
     if not mobile or len(mobile) != 10:
         dialog.ok('RevTV', 'Please enter a valid 10-digit Jio mobile number')
         return False
