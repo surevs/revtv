@@ -1,16 +1,66 @@
 #!/usr/bin/env python3
 """
 Repository Generator for RevTV
-Generates addons.xml and addons.xml.md5 for Kodi repository.
-Run this script after updating any addon to regenerate the repo files.
+Generates addons.xml, addons.xml.md5 and zips for Kodi repository.
+Following standard Kodi repository structure with /zips/ folder.
 """
 import os
 import hashlib
 import zipfile
+import shutil
 from xml.etree import ElementTree as ET
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+ZIPS_DIR = os.path.join(SCRIPT_DIR, 'zips')
 ADDONS = ['plugin.video.revtv', 'repository.revtv']
+
+
+def ensure_dirs():
+    """Ensure zips directory structure exists."""
+    os.makedirs(ZIPS_DIR, exist_ok=True)
+    for addon in ADDONS:
+        os.makedirs(os.path.join(ZIPS_DIR, addon), exist_ok=True)
+
+
+def get_addon_version(addon_dir):
+    """Get version from addon.xml."""
+    addon_xml = os.path.join(SCRIPT_DIR, addon_dir, 'addon.xml')
+    if os.path.exists(addon_xml):
+        tree = ET.parse(addon_xml)
+        return tree.getroot().get('version', '1.0.0')
+    return '1.0.0'
+
+
+def create_addon_zip(addon_dir):
+    """Create zip file for an addon in zips/addon_id/ folder."""
+    addon_path = os.path.join(SCRIPT_DIR, addon_dir)
+    if not os.path.exists(addon_path):
+        print(f"Addon not found: {addon_dir}")
+        return None
+    
+    version = get_addon_version(addon_dir)
+    zip_name = f"{addon_dir}-{version}.zip"
+    zip_folder = os.path.join(ZIPS_DIR, addon_dir)
+    zip_path = os.path.join(zip_folder, zip_name)
+    
+    # Remove old zips in this folder
+    for f in os.listdir(zip_folder):
+        if f.endswith('.zip'):
+            os.remove(os.path.join(zip_folder, f))
+    
+    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
+        for root, dirs, files in os.walk(addon_path):
+            dirs[:] = [d for d in dirs if d != '__pycache__' and not d.startswith('.')]
+            for file in files:
+                if file.endswith('.pyc') or file.startswith('.'):
+                    continue
+                file_path = os.path.join(root, file)
+                arc_name = os.path.join(addon_dir, os.path.relpath(file_path, addon_path))
+                zf.write(file_path, arc_name)
+    
+    print(f"Created: zips/{addon_dir}/{zip_name}")
+    return zip_name
+
 
 def generate_addons_xml():
     """Generate addons.xml from all addon.xml files."""
@@ -26,48 +76,32 @@ def generate_addons_xml():
     addons_xml = '<?xml version="1.0" encoding="UTF-8"?>\n'
     addons_xml += ET.tostring(addons_root, encoding='unicode')
     
-    with open(os.path.join(SCRIPT_DIR, 'addons.xml'), 'w', encoding='utf-8') as f:
+    # Save to zips folder
+    xml_path = os.path.join(ZIPS_DIR, 'addons.xml')
+    with open(xml_path, 'w', encoding='utf-8') as f:
         f.write(addons_xml)
-    print("Generated: addons.xml")
+    print("Generated: zips/addons.xml")
     
     # Generate MD5
     md5 = hashlib.md5(addons_xml.encode('utf-8')).hexdigest()
-    with open(os.path.join(SCRIPT_DIR, 'addons.xml.md5'), 'w') as f:
+    md5_path = os.path.join(ZIPS_DIR, 'addons.xml.md5')
+    with open(md5_path, 'w') as f:
         f.write(md5)
-    print(f"Generated: addons.xml.md5 ({md5})")
+    print(f"Generated: zips/addons.xml.md5 ({md5})")
+    
+    # Also save to root for GitHub Pages
+    shutil.copy(xml_path, os.path.join(SCRIPT_DIR, 'addons.xml'))
+    shutil.copy(md5_path, os.path.join(SCRIPT_DIR, 'addons.xml.md5'))
 
-def create_addon_zip(addon_dir):
-    """Create zip file for an addon."""
-    addon_path = os.path.join(SCRIPT_DIR, addon_dir)
-    if not os.path.exists(addon_path):
-        return
-    
-    # Get version from addon.xml
-    tree = ET.parse(os.path.join(addon_path, 'addon.xml'))
-    version = tree.getroot().get('version', '1.0.0')
-    
-    zip_name = f"{addon_dir}-{version}.zip"
-    zip_path = os.path.join(SCRIPT_DIR, zip_name)
-    
-    with zipfile.ZipFile(zip_path, 'w', zipfile.ZIP_DEFLATED) as zf:
-        for root, dirs, files in os.walk(addon_path):
-            # Skip __pycache__
-            dirs[:] = [d for d in dirs if d != '__pycache__']
-            for file in files:
-                if file.endswith('.pyc'):
-                    continue
-                file_path = os.path.join(root, file)
-                arc_name = os.path.relpath(file_path, SCRIPT_DIR)
-                zf.write(file_path, arc_name)
-    
-    print(f"Created: {zip_name}")
 
 if __name__ == '__main__':
     print("RevTV Repository Generator")
     print("=" * 40)
     
+    ensure_dirs()
+    
     for addon in ADDONS:
         create_addon_zip(addon)
     
     generate_addons_xml()
-    print("\nDone! Push to GitHub and enable Pages.")
+    print("\nDone! Push to GitHub.")
