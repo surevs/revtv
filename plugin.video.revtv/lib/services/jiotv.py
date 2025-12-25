@@ -377,9 +377,19 @@ def play_channel(handle, channel_id):
             li.setProperty('inputstream.adaptive.max_bandwidth', '500000')
         elif quality == 'medium':
             li.setProperty('inputstream.adaptive.max_bandwidth', '1500000')
-        elif quality == 'high':
+        if quality == 'high':
             li.setProperty('inputstream.adaptive.max_bandwidth', '5000000')
         # auto = no limit
+
+    # Set headers for Inputstream Adaptive (Critical for JioTV CDN)
+    stream_headers_list = []
+    for k, v in BASE_HEADERS.items():
+        if k not in ('Accept', 'Content-Type'):
+             stream_headers_list.append(f"{k}={v}")
+    
+    stream_headers_str = '&'.join(stream_headers_list)
+    li.setProperty('inputstream.adaptive.stream_headers', stream_headers_str)
+    li.setProperty('inputstream.adaptive.manifest_headers', stream_headers_str)
     
     li.setMimeType('application/vnd.apple.mpegurl')
     li.setContentLookup(False)
